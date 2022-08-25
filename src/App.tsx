@@ -18,24 +18,12 @@ const App = () => {
         Difficulty.MEDIUM,
     );
     const [isStarted, setIsStarted] = useState<boolean>(false);
-
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-    const setQuestionsState = async () => {
+
+    const handleStart = async () => {
+        setIsStarted(true);
         setQuestions(await fetchQuestions(questionsQuantity, difficulity));
     };
-
-    useEffect(() => {
-        console.log(questions);
-    }, [questions]);
-
-    const handleStart = () => {
-        setQuestionsState();
-        setIsStarted(true);
-    };
-
-    useEffect(() => {
-        console.log(currentQuestionIndex);
-    }, [currentQuestionIndex]);
 
     return (
         <Container className="App">
