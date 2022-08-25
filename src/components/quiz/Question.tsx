@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import ShuffleArray from "../utils/suffleArray";
+import ShuffleArray from "../../utils/suffleArray";
 import styled from "styled-components";
 
 //prop type
-import QuestionType from "../types/Question";
+import QuestionType from "../../types/Question";
 import { useState } from "react";
 
 const Question = (props: QuestionType) => {

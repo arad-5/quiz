@@ -7,7 +7,9 @@ import fetchQuestions from "./API/fetchQuestions";
 import QuestionType, { Difficulty } from "./types/Question";
 
 // components
-import QuestionsSliders from "./components/QuestionsSlider";
+import QuestionsSliders from "./components/quiz/QuestionsSlider";
+import StartMenu from "./components/StartMenu";
+import Quiz from "./components/quiz/index";
 
 const App = () => {
     const [questions, setQuestions] = useState<QuestionType[]>([]);
@@ -16,11 +18,10 @@ const App = () => {
         Difficulty.MEDIUM,
     );
     const [isStarted, setIsStarted] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
     const setQuestionsState = async () => {
         setQuestions(await fetchQuestions(questionsQuantity, difficulity));
-        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -30,7 +31,6 @@ const App = () => {
     const handleStart = () => {
         setQuestionsState();
         setIsStarted(true);
-        setIsLoading(true);
     };
 
     useEffect(() => {
@@ -40,35 +40,17 @@ const App = () => {
     return (
         <Container className="App">
             <h1>Arad quiz</h1>
-            {!isStarted && <button onClick={handleStart}>start</button>}
-            <QuestionsSliders
-                questions={questions}
-                currentQuestionIndex={currentQuestionIndex}
-            />
-            {isLoading && <div>loading ...</div>}
-            <ButtonsContainer>
-                {currentQuestionIndex <= questions.length - 1 &&
-                    currentQuestionIndex !== 0 && (
-                        <Button
-                            onClick={() =>
-                                setCurrentQuestionIndex((curr) => curr - 1)
-                            }
-                            style={{ marginRight: "auto" }}
-                        >
-                            previous
-                        </Button>
-                    )}
-                {currentQuestionIndex <= questions.length - 2 && (
-                    <Button
-                        onClick={() =>
-                            setCurrentQuestionIndex((curr) => curr + 1)
-                        }
-                        style={{ marginLeft: "auto" }}
-                    >
-                        next
-                    </Button>
+            <QuizContainer>
+                {isStarted ? (
+                    <Quiz
+                        questions={questions}
+                        currentQuestionIndex={currentQuestionIndex}
+                        setCurrentQuestionIndex={setCurrentQuestionIndex}
+                    />
+                ) : (
+                    <StartMenu handleStart={handleStart} />
                 )}
-            </ButtonsContainer>
+            </QuizContainer>
         </Container>
     );
 };
@@ -77,29 +59,18 @@ export default App;
 
 //styles
 const Container = styled.div`
-    height: 100vh;
     padding: 1rem;
-    max-width: 800px;
     margin: 0 auto;
-    /* border: 1px solid black; */
+    max-width: 900px;
     overflow: visible;
 `;
-
-const ButtonsContainer = styled.div`
+const QuizContainer = styled.div`
+    min-height: 80vh;
+    width: 100%;
+    position: relative;
+    overflow: visible;
     display: flex;
-    justify-content: space-between;
-`;
-const Button = styled.button`
-    background-color: transparent;
-    padding: 1rem 2rem;
-    border-radius: 1rem;
-    border: 1px solid #a1a1a1;
-    font-size: 1.3rem;
-    cursor: pointer;
-    transition: background-color 150ms, color 200ms;
-    &:hover {
-        background-color: #0b59ff;
-        color: white;
-        border-color: transparent;
-    }
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `;
